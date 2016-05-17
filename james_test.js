@@ -25,6 +25,14 @@ var angular_y = 0.0;
 var angular_z = 0.0;
 var updateRate = 100.0;
 var pauseChart = false;
+var dataPoints1 = [];
+var dataPoints2 = [];
+var dataPoints3 = [];
+var dataLength = 500;
+var startTime = new Date();
+
+var acc_x = 0.0, acc_y = 0.0, acc_z = 0.0;
+var gyro_x = 0.0, gyro_y = 0.0, gyro_z = 0.0;
 
 function twist_button_callback(){
   console.log("getting values");
@@ -66,14 +74,9 @@ publish_twist();
 // Plotting data
 // -------------
 window.onload = function () {
-  var startTime = new Date();
-	var dataPoints1 = [];
-  var dataPoints2 = [];
-  var dataPoints3 = [];
-  var dataLength = 500;
 	var chart = new CanvasJS.Chart("chartContainer", {
 			title : {
-				text : "Random Data"
+				text : "Accelerometer Data"
 			},
       axisX :{
         gridColor: "lightblue",
@@ -97,63 +100,63 @@ window.onload = function () {
 
 	chart.render();
 
-	var yVal1 = 15, yVal2 = 10, yVal3 = 20;
-  var xVal = 0;
-	function updateChart() {
-
-		yVal1 = yVal1 + Math.round(5 + Math.random() * (-5 - 5));
-    yVal2 = yVal2 + Math.round(5 + Math.random() * (-5 - 5));
-    yVal3 = yVal3 + Math.round(5 + Math.random() * (-5 - 5));
+  function updateAccChart() {
 
     var now = new Date();
     secondsSinceStart = (now - startTime)/1000;
-		dataPoints1.push({
-			y : yVal1,
+    dataPoints1.push({
+      y : acc_x,
       x : secondsSinceStart
-		});
+    });
     dataPoints2.push({
-			y : yVal2,
+      y : acc_y,
       x : secondsSinceStart
-		});
+    });
     dataPoints3.push({
-			y : yVal3,
+      y : acc_z,
       x : secondsSinceStart
-		});
-    if (dataPoints1.length > dataLength)
+    });
+    while (dataPoints1.length > dataLength)
     {
       dataPoints1.shift();
       dataPoints2.shift();
       dataPoints3.shift();
     }
     if(!pauseChart){
-		  chart.render();
+      chart.render();
     }
-    updateRate = parseFloat(document.getElementById("update_rate").value)
-    console.log("updating at")
-    console.log(Math.round(1000.0/updateRate));
-    setTimeout(updateChart, Math.round(1000.0/updateRate));
-	};
-  updateChart();
+  };
+
+  // Subscribing to a Topic
+  // ----------------------
+
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/mikey/imu/data',
+    messageType : 'sensor_msgs/Imu'
+  });
+
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name);
+    acc_x = message.linear_acceleration.x;
+    acc_y = message.linear_acceleration.y;
+    acc_z = message.linear_acceleration.z;
+    gyro_x = message.angular_velocity.x;
+    gyro_y = message.angular_velocity.y;
+    gyro_z = message.angular_velocity.z;
+    updateAccChart();
+  });
+
 }
+
+
 
 function pause_chart(){
   pauseChart = !pauseChart;
 }
 
 
-// Subscribing to a Topic
-// ----------------------
 
-var listener = new ROSLIB.Topic({
-  ros : ros,
-  name : '/listener',
-  messageType : 'std_msgs/String'
-});
-
-listener.subscribe(function(message) {
-  console.log('Received message on ' + listener.name + ': ' + message.data);
-  listener.unsubscribe();
-});
 
 // Calling a service
 // -----------------
