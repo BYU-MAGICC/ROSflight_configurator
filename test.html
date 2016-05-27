@@ -9,9 +9,7 @@
 </head>
 
 <body>
-  <!-- <div id="chartContainer" style="height: 500px; width: 50%;"></div> -->
-  <h1>Simple roslib Example</h1>
-  <p>Check your Web Console for output.</p>
+  <h1>ROSflight Ground Sation</h1>
   <form action="Twist Message">
     Linear x: <input type="number" id="linear_x" value="0.0"><br>
     Linear y: <input type="number" id="linear_y" value="0.0"><br>
@@ -20,12 +18,21 @@
     Angular y: <input type="number" id="angular_y" value="0.0"><br>
     Angular y: <input type="number" id="angular_z" value="0.0"><br>
   </form>
-
   <button onclick="twist_button_callback()">Publish</button>
+
+  <div>
+    Param Name: <input type="string" id="param_id" value="">
+    Param Value: <input type="number" id="param_value" value="0"<br>
+    <button onclick="set_param()">Set Param</button>
+  </div>
+
+  <div>
+    <button onclick="save_params()">Save Params</button>
+  </div>
+
   <button onclick="pause_chart()">Pause Chart</button>
 
-  <div id = "chartContainer" style = "height: 300px; width: 100%;" />
-
+  <div id = "accChartContainer" style = "height: 300px; width: 100%;" />
 
 </body>
 </html>

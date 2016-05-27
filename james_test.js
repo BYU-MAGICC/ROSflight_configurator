@@ -2,7 +2,7 @@
 // -----------------
 
 var ros = new ROSLIB.Ros({
-  url : 'ws://localhost:9090'
+  url : 'ws://192.168.1.2:9090'
 });
 
 ros.on('connection', function() {
@@ -34,15 +34,25 @@ var startTime = new Date();
 var acc_x = 0.0, acc_y = 0.0, acc_z = 0.0;
 var gyro_x = 0.0, gyro_y = 0.0, gyro_z = 0.0;
 
+var setParamClient = new ROSLIB.Service({
+  ros :ros,
+  name : 'param_set',
+  serviceType : 'fcu_io/ParamSet'
+});
+
+var saveParamClient = new ROSLIB.Service({
+  ros :ros,
+  name : 'param_write',
+  serviceType : 'std_srvs/Empty'
+});
+
 function twist_button_callback(){
-  console.log("getting values");
   linear_x = parseFloat(document.getElementById("linear_x").value);
   linear_y = parseFloat(document.getElementById("linear_y").value);
   linear_z = parseFloat(document.getElementById("linear_z").value);
   angular_x = parseFloat(document.getElementById("angular_x").value);
   angular_y = parseFloat(document.getElementById("angular_y").value);
   angular_z = parseFloat(document.getElementById("angular_z").value);
-   console.log("got values");
 }
 
 // Publishing a Topic
@@ -74,7 +84,7 @@ publish_twist();
 // Plotting data
 // -------------
 window.onload = function () {
-	var chart = new CanvasJS.Chart("chartContainer", {
+	var accChart = new CanvasJS.Chart("accChartContainer", {
 			title : {
 				text : "Accelerometer Data"
 			},
@@ -98,7 +108,7 @@ window.onload = function () {
 			]
 		});
 
-	chart.render();
+	accChart.render();
 
   function updateAccChart() {
 
@@ -123,21 +133,17 @@ window.onload = function () {
       dataPoints3.shift();
     }
     if(!pauseChart){
-      chart.render();
+      accChart.render();
     }
   };
 
-  // Subscribing to a Topic
-  // ----------------------
-
   var listener = new ROSLIB.Topic({
     ros : ros,
-    name : '/mikey/imu/data',
+    name : '/imu/data',
     messageType : 'sensor_msgs/Imu'
   });
 
   listener.subscribe(function(message) {
-    console.log('Received message on ' + listener.name);
     acc_x = message.linear_acceleration.x;
     acc_y = message.linear_acceleration.y;
     acc_z = message.linear_acceleration.z;
@@ -149,39 +155,30 @@ window.onload = function () {
 
 }
 
-
-
 function pause_chart(){
   pauseChart = !pauseChart;
 }
 
+function set_param(){
+  var param_set_caller = new ROSLIB.ServiceRequest({
+    param_id : document.getElementById("param_id").value,
+    param_type : 6,
+    integer_value : parseInt(document.getElementById("param_value").value),
+    unsigned_value : 0,
+    float_value : 0.0
+  })
+  setParamClient.callService(param_set_caller)
+}
+
+function save_params(){
+  var save_param_message = new ROSLIB.ServiceRequest({})
+  saveParamClient.callService(save_param_message)
+}
 
 
-
-// Calling a service
-// -----------------
-
-var addTwoIntsClient = new ROSLIB.Service({
-  ros : ros,
-  name : '/add_two_ints',
-  serviceType : 'rospy_tutorials/AddTwoInts'
-});
-
-var request = new ROSLIB.ServiceRequest({
-  a : 1,
-  b : 2
-});
-
-addTwoIntsClient.callService(request, function(result) {
-  console.log('Result for service call on '
-    + addTwoIntsClient.name
-    + ': '
-    + result.sum);
-});
 
 // Getting and setting a param value
 // ---------------------------------
-
 ros.getParams(function(params) {
   console.log(params);
 });
