@@ -17,82 +17,11 @@ ros.on('close', function() {
   console.log('Connection to websocket server closed.');
 });
 
-// var linear_x = 0.0;
-// var linear_y = 0.0;
-// var linear_z = 0.0;
-// var angular_x = 0.0;
-// var angular_y = 0.0;
-// var angular_z = 0.0;
-// var updateRate = 100.0;
-// var pauseChart = false;
-// var dataPoints1 = [];
-// var dataPoints2 = [];
-// var dataPoints3 = [];
-// var dataLength = 500;
-// var startTime = new Date();
-
-// var acc_x = 0.0, acc_y = 0.0, acc_z = 0.0;
-// var gyro_x = 0.0, gyro_y = 0.0, gyro_z = 0.0;
-
 var armed_state = 0
 var failsafe_state = 0
 var rc_override = 0
 var unsaved_parameters = 0
-
 var attitude_quaternion = new THREE.Quaternion(0, 0, 0, 1)
-
-
-
-
-
-
-
-// var setParamClient = new ROSLIB.Service({
-//   ros :ros,
-//   name : 'param_set',
-//   serviceType : 'fcu_io/ParamSet'
-// });
-
-// var saveParamClient = new ROSLIB.Service({
-//   ros :ros,
-//   name : 'param_write',
-//   serviceType : 'std_srvs/Empty'
-// });
-
-// function twist_button_callback(){
-//   linear_x = parseFloat(document.getElementById("linear_x").value);
-//   linear_y = parseFloat(document.getElementById("linear_y").value);
-//   linear_z = parseFloat(document.getElementById("linear_z").value);
-//   angular_x = parseFloat(document.getElementById("angular_x").value);
-//   angular_y = parseFloat(document.getElementById("angular_y").value);
-//   angular_z = parseFloat(document.getElementById("angular_z").value);
-// }
-
-// Publishing a Topic
-// ------------------
-// function publish_twist(){
-//   var cmdVel = new ROSLIB.Topic({
-//     ros : ros,
-//     name : '/cmd_vel',
-//     messageType : 'geometry_msgs/Twist'
-//   });
-
-//   var twist = new ROSLIB.Message({
-//     linear : {
-//       x : linear_x,
-//       y : linear_y,
-//       z : linear_z
-//     },
-//     angular : {
-//       x : angular_x,
-//       y : angular_y,
-//       z : angular_z
-//     }
-//   });
-//   cmdVel.publish(twist);
-//   setTimeout(publish_twist, 10);
-// }
-// publish_twist();
 
 // Display Status of Aircraft
 function display_status(){
@@ -183,19 +112,11 @@ window.onload = function () {
 var scene, camera, renderer;
 var mesh;
 
-
 init();
 animate();
 
 // Sets up the scene.
-function init() {
-	// Camera
-	// camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
-	// camera.position.z = 000;
-	// camera.position.x = -400;
-	// camera.rotation.y = -Math.PI/2.0;
-	// camera.rotation.x = -Math.PI/2.0;
-	// 
+function init() { 
 	scene = new THREE.Scene();
 
 	var WIDTH = window.innerWidth,
@@ -258,41 +179,3 @@ function animate() {
   mesh.quaternion.set(attitude_quaternion.y, -attitude_quaternion.z, -attitude_quaternion.x, attitude_quaternion.w);
   renderer.render( scene, camera );
 }
-
-// function pause_chart(){
-//   pauseChart = !pauseChart;
-// }
-
-// function set_param(){
-//   var param_set_caller = new ROSLIB.ServiceRequest({
-//     param_id : document.getElementById("param_id").value,
-//     param_type : 6,
-//     integer_value : parseInt(document.getElementById("param_value").value),
-//     unsigned_value : 0,
-//     float_value : 0.0
-//   })
-//   setParamClient.callService(param_set_caller)
-// }
-
-// function save_params(){
-//   var save_param_message = new ROSLIB.ServiceRequest({})
-//   saveParamClient.callService(save_param_message)
-// }
-
-
-
-// // Getting and setting a param value
-// // ---------------------------------
-// ros.getParams(function(params) {
-//   console.log(params);
-// });
-
-// var maxVelX = new ROSLIB.Param({
-//   ros : ros,
-//   name : 'max_vel_y'
-// });
-
-// maxVelX.set(0.8);
-// maxVelX.get(function(value) {
-//   console.log('MAX VAL: ' + value);
-// });
