@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+<script src="js/three.min.js"></script>
+
+</head>
+
+<body>
+  <h1>Ground Station HUD</h1>
+
+  <div>
+    <output id="armed_text"></output>  
+  </div> 
+  <div>
+    <output id="failsafe_text"></output>
+  </div>
+
+  <div>
+    RC_Override
+    <output id="rc_override_text"></output>
+  </div>
+
+  <div>
+    <output id="unsaved_parameters"></output>
+  </div>
+
+  <div id="attitude_div">
+    Attitude
+  </div>
+</body>
+
+<script type="text/javascript" src="HUD.js"></script>
+<script src="attitude_graphic.js"></script>
+
+
+</html>
