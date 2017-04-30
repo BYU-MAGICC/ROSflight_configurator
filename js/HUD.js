@@ -66,8 +66,7 @@ function display_status(){
 }
 display_status();
 
-// Plotting data
-// -------------
+// Subscribe to and handle ROS messages
 window.onload = function () {
   var status_listener = new ROSLIB.Topic({
     ros : ros,
@@ -120,48 +119,46 @@ function init() {
 	scene = new THREE.Scene();
 
 	var WIDTH = window.innerWidth,
-        HEIGHT = window.innerHeight;
+      HEIGHT = window.innerHeight;
 
-    renderer = new THREE.WebGLRenderer({antialias:true});
-    renderer.setSize(WIDTH, HEIGHT);
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(WIDTH, HEIGHT);
 
-    // Add the renderer to the DOM
-    container = document.getElementById('attitude_div');
-    container.appendChild( renderer.domElement );
+  // Add the renderer to the DOM
+  container = document.getElementById('attitude_div');
+  container.appendChild( renderer.domElement );
 
 
 	// Create a camera, zoom it out from the model a bit, and add it to the scene.
-    camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 20000);
-    camera.position.set(0,0,8)
-    scene.add(camera);
+  camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 20000);
+  camera.position.set(0,0,8)
+  scene.add(camera);
 
-    // Dynamic Resizing
-    window.addEventListener('resize', function() {
-      var WIDTH = window.innerWidth,
-          HEIGHT = window.innerHeight;
-      renderer.setSize(WIDTH, HEIGHT);
-      camera.aspect = WIDTH / HEIGHT;
-      camera.updateProjectionMatrix();
-    });
+  // Dynamic Resizing
+  window.addEventListener('resize', function() {
+    var WIDTH = window.innerWidth,
+        HEIGHT = window.innerHeight;
+    renderer.setSize(WIDTH, HEIGHT);
+    camera.aspect = WIDTH / HEIGHT;
+    camera.updateProjectionMatrix();
+  });
 
-    var loader = new THREE.JSONLoader();
+  // Load the 3D model to display
+  var loader = new THREE.JSONLoader();
+  loader.load( "models/quadcopter.json", function(geometry, materials){
+    var material = new THREE.MeshFaceMaterial(materials);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.scale.set(0.6, 0.6, 0.6	)
+    scene.add(mesh);
+  });
 
-    // loader.load( "models/treehouse_logo.js", function(geometry, materials){
-   	// var material = new THREE.MeshLambertMaterial({color: 0x55B663});
-   	loader.load( "models/quadcopter.json", function(geometry, materials){
-      var material = new THREE.MeshFaceMaterial(materials);
-      mesh = new THREE.Mesh(geometry, material);
-      mesh.scale.set(0.6, 0.6, 0.6	)
-      scene.add(mesh);
-    });
-
-    // Set the background color of the scene.
-    renderer.setClearColor(0x333F47, 1);
+  // Set the background color of the scene.
+  renderer.setClearColor(0x333F47, 1);
  
-    // Create a light, set its position, and add it to the scene.
-    var light = new THREE.PointLight(0xffffff);
-    light.position.set(-100,200,100);
-    scene.add(light);
+  // Create a light, set its position, and add it to the scene.
+  var light = new THREE.PointLight(0xffffff);
+  light.position.set(-100,200,100);
+  scene.add(light);
 
   window.addEventListener( 'resize', onWindowResize, false );
 }
@@ -176,6 +173,7 @@ function onWindowResize() {
 // Renders the scene and updates the render as needed.
 function animate() {
   requestAnimationFrame( animate );
+  // Rotate the quaternion into the correct coordinate frame (EUN) <-- (discovered through experimentation)
   mesh.quaternion.set(attitude_quaternion.y, -attitude_quaternion.z, -attitude_quaternion.x, attitude_quaternion.w);
   renderer.render( scene, camera );
 }
