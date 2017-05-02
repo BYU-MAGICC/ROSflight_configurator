@@ -36,7 +36,7 @@ window.onload = function() {
   });
 }
 
-var tv = 2;
+var tv = 10;
 
 // instantiate our graph!
 var graph = new Rickshaw.Graph({
@@ -53,7 +53,7 @@ var graph = new Rickshaw.Graph({
     name: 'acc_z'
   }], undefined, {
     timeInterval: tv,
-    maxDataPoints: 2.0*1000/tv,
+    maxDataPoints: 500,
     timeBase: new Date().getTime() / 1000
   })
 
@@ -74,10 +74,7 @@ var y_ticks = new Rickshaw.Graph.Axis.Y( {
 } );
 
 
-
-
 // add some data every so often
-
 var i = 0;
 var iv = setInterval(function() {
 

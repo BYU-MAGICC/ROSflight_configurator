@@ -14,6 +14,7 @@
         <!-- JS Library Includes -->
         <script src="js/d3.v3.min.js"></script>
         <script src="js/rickshaw.min.js"></script>
+        <script src="js/jquery.min.js"></script>
 
         <style>
         #chart {
@@ -26,12 +27,19 @@
             bottom: 0;
             width: 40px;
         }
+        #imu_time_length {
+            position: relative;
+            below: 10px;
+        }
         </style>
     </head>
     <body>
         <div id="chart_container">
             <div id="y_axis"></div>
             <div id="chart" class="rickshaw_graph"></div>
+            <div id="controls">
+                <button id="calibrate_imu" onclick="calibrate_imu"/>
+            </div>
         </div>
 
 
