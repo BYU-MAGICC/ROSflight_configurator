@@ -2,7 +2,7 @@
 // -----------------
 
 var ros = new ROSLIB.Ros({
-  url : 'ws://localhost:9090'
+  url: 'ws://localhost:9090'
 });
 
 ros.on('connection', function() {
@@ -19,11 +19,11 @@ ros.on('close', function() {
 
 // Subscribe to and handle ROS messages
 var acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z;
-window.onload = function () {
+window.onload = function() {
   var imu_listener = new ROSLIB.Topic({
-    ros : ros,
-    name : '/imu/data',
-    messageType : 'sensor_msgs/Imu'
+    ros: ros,
+    name: '/imu/data',
+    messageType: 'sensor_msgs/Imu'
   });
 
   imu_listener.subscribe(function(msg) {
@@ -36,33 +36,58 @@ window.onload = function () {
   });
 }
 
-var tv = 30;
+var tv = 2;
 
 // instantiate our graph!
-var graph = new Rickshaw.Graph( {
+var graph = new Rickshaw.Graph({
   element: document.getElementById("chart"),
-  width: 900,
-  height: 500,
+  width: 1200,
+  height: 400,
   renderer: 'line',
-  series: new Rickshaw.Series.FixedDuration([{ name: 'acc_x' }, { name: 'acc_y' }, { name: 'acc_z' }], undefined, {
+  min: 'auto',
+  series: new Rickshaw.Series.FixedDuration([{
+    name: 'acc_x'
+  }, {
+    name: 'acc_y'
+  }, {
+    name: 'acc_z'
+  }], undefined, {
     timeInterval: tv,
-    maxDataPoints: 100, 
+    maxDataPoints: 2.0*1000/tv,
     timeBase: new Date().getTime() / 1000
-  }) 
+  })
+
+});
+graph.render();
+
+var xAxis = new Rickshaw.Graph.Axis.Time({
+    graph: graph,
+    timeFixture: new Rickshaw.Fixtures.Time.Local()
+});
+xAxis.render();
+
+var y_ticks = new Rickshaw.Graph.Axis.Y( {
+  graph: graph,
+  orientation: 'left',
+  tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+  element: document.getElementById('y_axis')
 } );
 
-graph.render();
+
+
 
 // add some data every so often
 
 var i = 0;
-var iv = setInterval( function() {
+var iv = setInterval(function() {
 
-  var data = { one: acc_x };
+  var data = {
+    one: acc_x
+  };
   data.two = acc_y
   data.three = acc_z;
 
   graph.series.addData(data);
-  graph.render();
+  graph.update();
 
-}, tv );
+}, tv);
