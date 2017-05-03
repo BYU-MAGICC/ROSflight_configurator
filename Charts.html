@@ -17,19 +17,58 @@
         <script src="js/jquery.min.js"></script>
 
         <style>
+        #acc_chart_container {
+            display: block;
+        }
         #acc_chart {
             position: relative;
             left: 40px;
         }
         #acc_y_axis {
-            position: absolute;
-            top: 0;
-            bottom: 0;
+            float: left;
+            position: relative;
             width: 40px;
         }
-        #imu_time_length {
+
+        #gyro_chart_container {
+            display: block;
+        }
+        #gyro_chart {
             position: relative;
-            below: 10px;
+            float: left;
+            left: 40px;
+        }
+        #gyro_y_axis {
+            position: relative;
+            float: left;
+            width: 40px;
+        }
+
+        #baro_chart_container {
+            display: block;
+        }
+        #baro_chart {
+            position: relative;
+            float: left;
+            left: 40px;
+        }
+        #baro_y_axis {
+            position: relative;
+            float: left;
+            width: 40px;
+        }
+
+        #mag_chart_container {
+            display: block;
+        }
+        #mag_chart {
+            position: relative;
+            left: 40px;
+        }
+        #mag_y_axis {
+            float: left;
+            position: relative;
+            width: 40px;
         }
         </style>
     </head>
@@ -37,18 +76,27 @@
         <div id="accel_chart_container">
             <div id="acc_y_axis"></div>
             <div id="acc_chart" class="rickshaw_graph"></div>
-            <div id="controls">
-                <button id="calibrate_imu" onclick="calibrate_imu()">Calibrate IMU</button>
-            </div>
         </div>
 
         <div id="gyro_chart_container">
             <div id="gyro_y_axis"></div>
             <div id="gyro_chart" class="rickshaw_graph"></div>
-            <div id="controls">
-                <button id="calibrate_imu" onclick="calibrate_imu"/>
-            </div>
         </div>
+
+        <div id="controls">
+            <button id="calibrate_imu" onclick="calibrate_imu()">Calibrate IMU</button>
+        </div>
+
+        <div id="baro_chart_container">
+            <div id="baro_y_axis"></div>
+            <div id="baro_chart" class="rickshaw_graph"></div>
+        </div>
+
+        <div id="mag_chart_container">
+            <div id="mag_y_axis"></div>
+            <div id="mag_chart" class="rickshaw_graph"></div>
+        </div>
+
 
 
         <script src="chart.js"></script>
