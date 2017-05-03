@@ -36,11 +36,11 @@ window.onload = function() {
   });
 }
 
-var tv = 10;
+var tv = 1/60 * 1000;
 
 // instantiate our graph!
 var graph = new Rickshaw.Graph({
-  element: document.getElementById("chart"),
+  element: document.getElementById("acc_chart"),
   width: 1200,
   height: 400,
   renderer: 'line',
@@ -53,7 +53,7 @@ var graph = new Rickshaw.Graph({
     name: 'acc_z'
   }], undefined, {
     timeInterval: tv,
-    maxDataPoints: 500,
+    maxDataPoints: 180,
     timeBase: new Date().getTime() / 1000
   })
 
@@ -67,11 +67,23 @@ var xAxis = new Rickshaw.Graph.Axis.Time({
 xAxis.render();
 
 var y_ticks = new Rickshaw.Graph.Axis.Y( {
-  graph: graph,
+  graph: graph, 
   orientation: 'left',
   tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-  element: document.getElementById('y_axis')
+  element: document.getElementById('acc_y_axis')
 } );
+
+function calibrate_imu() {
+  var imu_srv = new ROSLIB.Service({
+    ros: ros,
+    name: '/calibrate_imu',
+    serviceType: 'std_srvs/Trigger'
+  });
+  var request = new ROSLIB.ServiceRequest({});
+  imu_srv.callService(request, function(result){
+    console.log("calibrating IMU");
+  });
+};
 
 
 // add some data every so often

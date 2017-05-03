@@ -17,11 +17,11 @@
         <script src="js/jquery.min.js"></script>
 
         <style>
-        #chart {
+        #acc_chart {
             position: relative;
             left: 40px;
         }
-        #y_axis {
+        #acc_y_axis {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -34,9 +34,17 @@
         </style>
     </head>
     <body>
-        <div id="chart_container">
-            <div id="y_axis"></div>
-            <div id="chart" class="rickshaw_graph"></div>
+        <div id="accel_chart_container">
+            <div id="acc_y_axis"></div>
+            <div id="acc_chart" class="rickshaw_graph"></div>
+            <div id="controls">
+                <button id="calibrate_imu" onclick="calibrate_imu()">Calibrate IMU</button>
+            </div>
+        </div>
+
+        <div id="gyro_chart_container">
+            <div id="gyro_y_axis"></div>
+            <div id="gyro_chart" class="rickshaw_graph"></div>
             <div id="controls">
                 <button id="calibrate_imu" onclick="calibrate_imu"/>
             </div>
