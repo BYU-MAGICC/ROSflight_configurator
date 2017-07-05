@@ -71,7 +71,7 @@ window.onload = function () {
   var status_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/status',
-    messageType : 'fcu_common/Status'
+    messageType : 'rosflight_msgs/Status'
   });
 
   status_listener.subscribe(function(message) {
@@ -95,7 +95,7 @@ window.onload = function () {
   var attitude_listener = new ROSLIB.Topic({
   	ros : ros,
   	name : '/attitude',
-  	messageType: 'fcu_common/Attitude'
+  	messageType: 'rosflight_msgs/Attitude'
   });
 
   attitude_listener.subscribe(function(message) {
